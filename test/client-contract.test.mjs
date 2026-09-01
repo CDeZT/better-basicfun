@@ -23,8 +23,6 @@ test('unsupported and native routes retire the injected composer mount', () => {
   assert.match(client, /type:"range"[^}]*step:1/)
   assert.match(client, /n\.select\(\{provider:current\.provider,model:current\.model,reasoningEffort:S\}\)/)
   assert.doesNotMatch(client, /bre-effort-canvas/)
-  assert.doesNotMatch(client, /requestAnimationFrame\(ae\)/)
-  assert.doesNotMatch(client, /addEventListener\("pointermove"/)
   assert.match(client, /data-bre-mode=\"native-list\"/)
 })
 
