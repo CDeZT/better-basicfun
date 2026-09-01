@@ -5,7 +5,7 @@ import vm from 'node:vm'
 
 const client = await readFile(new URL('../lib/client.js', import.meta.url), 'utf8')
 
-test('composer client keeps the stable animation path and exposes safe menu modes', () => {
+test('composer client uses native discrete effort selection and safe menu modes', () => {
   assert.match(client, /--bre-level-count/)
   assert.match(client, /--bre-level-step/)
   assert.match(client, /bre-effort-slider::before/)
@@ -19,7 +19,10 @@ test('composer client keeps the stable animation path and exposes safe menu mode
 })
 
 test('unsupported and native routes retire the injected composer mount', () => {
-  assert.match(client, /if\(isNative\|\|!R\)\{he\(k\),k=void 0,q\?\.remove\(\)/)
+  assert.match(client, /if\(isNative\|\|!R\)\{cleanup\(\);return\}/)
+  assert.match(client, /type:"range"[^}]*step:1/)
+  assert.match(client, /n\.select\(\{provider:current\.provider,model:current\.model,reasoningEffort:S\}\)/)
+  assert.doesNotMatch(client, /bre-effort-canvas/)
   assert.match(client, /data-bre-mode=\"native-list\"/)
 })
 
