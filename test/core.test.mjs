@@ -3,7 +3,7 @@ import { mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promise
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
-import { apply } from '../lib/index.js'
+import { apply, Config } from '../lib/index.js'
 import {
   ensureWorkspaceLayout,
   listLoaderPlugins,
@@ -24,6 +24,18 @@ test('default path is a dedicated child rather than the writable DSH private roo
   assert.equal(resolved.dshHome, dshHome)
   assert.equal(resolved.workspacePath, join(dshHome, 'workspace'))
   assert.notEqual(resolved.workspacePath, resolved.dshHome)
+})
+
+test('published Config supplies validated defaults for deployment-varying limits', () => {
+  assert.deepEqual(Config({}), {
+    title: 'Default workspace',
+    pinFirst: true,
+    memoryMaxBytes: 32 * 1024,
+    defaultListLimit: 50,
+    defaultContentLimit: 32 * 1024,
+    maxBinaryReadBytes: 64 * 1024 * 1024,
+  })
+  assert.throws(() => Config({ defaultListLimit: 0 }), /expected number >= 1/i)
 })
 
 test('environment workspace override supports isolated deployment', () => {
@@ -156,7 +168,10 @@ test('registered tool exposes unredacted native settings, credentials, and DSH f
       async describe() { return { configured: true, source: 'file', writable: true } },
       async listRecords() { return [] },
     },
-    storage: {},
+    storage: {
+      backend: { names() { return ['workspace', 'session_projcache'] } },
+      forms: new Map([['workspace', {}], ['session', {}]]),
+    },
     skills: { async list() { return [] } },
     fs: nativeFsMock(),
     get() { return undefined },
@@ -175,6 +190,12 @@ test('registered tool exposes unredacted native settings, credentials, and DSH f
 
     const file = JSON.parse(await tool.execute({ kind: 'file', path: '.credentials.yaml' }, exec))
     assert.equal(file.document.content, 'DEMO_SECRET: visible')
+
+    const storage = JSON.parse(await tool.execute({ kind: 'storage' }, exec))
+    assert.deepEqual(storage.nativeStorage, {
+      backendNames: ['workspace', 'session_projcache'],
+      formNames: ['workspace', 'session'],
+    })
   } finally {
     await rm(dshHome, { recursive: true, force: true })
   }

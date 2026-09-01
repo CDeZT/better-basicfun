@@ -4,6 +4,8 @@ An installable, cross-platform DSH bundle that creates a persistent default Work
 
 This is a DSH plugin, not a Codex plugin. It never bridges to `~/.codex`.
 
+Source: <https://github.com/CDeZT/dsh-default-workspace> · Release: <https://github.com/CDeZT/dsh-default-workspace/releases/latest>
+
 ## Important security warning
 
 This plugin deliberately exposes sensitive DSH data to the model. `dsh_resources` can return unredacted settings, resolved credential values, credential records, full session records, plugin files, skill bodies, memory, and files below `DSH_HOME`. Tool results may be sent to the configured model provider. Install it only on a trusted personal deployment; read [SECURITY.md](SECURITY.md) first.
@@ -23,7 +25,7 @@ DSH already discovers both `<workspace>/.dsh/skills` and `$DSH_HOME/skills`; thi
 
 ## Native resource access and pagination
 
-The tool is backed by `ctx.loader`, `ctx.skills`, `ctx.sessionQuery`, `ctx.fs`, `ctx.settings`, `ctx.credentials`, and `ctx.storage`. Its `kind` values are `overview`, `plugins`, `skills`, `memory`, `sessions`, `storage`, `settings`, `credential`, `list`, and `file`.
+The tool is backed by `ctx.loader`, `ctx.skills`, `ctx.sessionQuery`, `ctx.fs`, `ctx.settings`, `ctx.credentials`, and `ctx.storage`. Its `kind` values are `overview`, `plugins`, `skills`, `memory`, `sessions`, `storage`, `settings`, `credential`, `list`, and `file`. `kind=storage` also reports the mounted native storage backend and form names before listing the corresponding DSH storage directory.
 
 Use `offset` and `limit` to continue a result. A `nextOffset` value means another page is available; the plugin does not silently replace a complete list with “last N” entries. For `skills`, pass `name` to read a complete native definition/body. For `sessions`, pass `id` to read a complete session document. `list` and `file` accept any DSH_HOME-relative or DSH_HOME-contained path, including profiles and installed package files.
 

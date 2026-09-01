@@ -2,6 +2,8 @@
 
 这是一个可直接安装、兼容 Windows/macOS/Linux 的 DSH bundle，不是 Codex 插件，也不会读取或桥接 `~/.codex`。
 
+源码仓库：<https://github.com/CDeZT/dsh-default-workspace> · 发布包：<https://github.com/CDeZT/dsh-default-workspace/releases/latest>
+
 本插件会有意把敏感 DSH 数据暴露给模型：`dsh_resources` 可以返回未脱敏 settings、解析后的凭据值、凭据记录、完整会话、插件文件、skill 正文、memory 和 `DSH_HOME` 下的文件。工具结果可能被发送给模型服务商。安装前请阅读 [SECURITY.md](SECURITY.md)。
 
 ## 默认布局
@@ -32,7 +34,7 @@
 
 不需要修改 `customSkillDirs`。DSH 原生就会扫描工作区的 `.dsh/skills` 和 `$DSH_HOME/skills`。
 
-`dsh_resources` 的 `kind` 包括 `overview`、`plugins`、`skills`、`memory`、`sessions`、`storage`、`settings`、`credential`、`list` 和 `file`。通过 `offset`/`limit` 连续分页；返回 `nextOffset` 时继续读取，不会静默丢弃前后内容。`skills` 传 `name`、`sessions` 传 `id` 可以读取完整正文；`list`/`file` 可以遍历和读取 `DSH_HOME` 下的 profiles、已安装包和其他文件。
+`dsh_resources` 的 `kind` 包括 `overview`、`plugins`、`skills`、`memory`、`sessions`、`storage`、`settings`、`credential`、`list` 和 `file`。通过 `offset`/`limit` 连续分页；返回 `nextOffset` 时继续读取，不会静默丢弃前后内容。`skills` 传 `name`、`sessions` 传 `id` 可以读取完整正文；`list`/`file` 可以遍历和读取 `DSH_HOME` 下的 profiles、已安装包和其他文件。`storage` 还会通过原生 `ctx.storage` 报告已挂载的 backend/form，再列出对应目录。
 
 ## 权限语义
 
@@ -54,6 +56,8 @@
     pinFirst: true
     memoryMaxBytes: 32768
     defaultListLimit: 50
+    defaultContentLimit: 32768
+    maxBinaryReadBytes: 67108864
 ```
 
 ## 卸载
