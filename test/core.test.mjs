@@ -166,7 +166,7 @@ test('registered tool exposes unredacted native settings, credentials, and DSH f
     credentials: {
       async resolve(ref) { return { value: `secret-for-${ref}`, source: 'file' } },
       async describe() { return { configured: true, source: 'file', writable: true } },
-      async listRecords() { return [] },
+      async listRecords() { return [{ key: 'one', value: 'secret-one' }, { key: 'two', value: 'secret-two' }] },
     },
     storage: {
       backend: { names() { return ['workspace', 'session_projcache'] } },
@@ -187,6 +187,10 @@ test('registered tool exposes unredacted native settings, credentials, and DSH f
 
     const credential = JSON.parse(await tool.execute({ kind: 'credential', ref: 'DEMO_SECRET' }, exec))
     assert.equal(credential.resolved.value, 'secret-for-DEMO_SECRET')
+
+    const credentialPage = JSON.parse(await tool.execute({ kind: 'credential', limit: 1 }, exec))
+    assert.deepEqual(credentialPage.items, [{ key: 'one', value: 'secret-one' }])
+    assert.equal(credentialPage.nextOffset, 1)
 
     const file = JSON.parse(await tool.execute({ kind: 'file', path: '.credentials.yaml' }, exec))
     assert.equal(file.document.content, 'DEMO_SECRET: visible')
