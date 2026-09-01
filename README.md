@@ -25,7 +25,7 @@ This plugin deliberately exposes sensitive DSH data to the model. `dsh_resources
 
 The reasoning guard is deliberately host-only. It does not send requests, alter provider endpoints, infer unsupported effort levels, or guess a wire format. DSH's existing `reasoningEfforts` mapping is the source of truth for model-specific request encoding.
 
-The browser-side enhancement adds a restrained, native range slider for non-native providers. It uses clearly visible per-level tick marks and keeps the original DSH menu rows behind an **Advanced settings** item, so detailed manual selection remains available. Native DeepSeek routes bypass the slider and use DSH's own controls.
+The browser-side enhancement adds a restrained, animated effort slider for non-native providers. It uses clearly visible per-level tick marks and keeps the original DSH menu rows behind an **Advanced settings** item, so detailed manual selection remains available. Native DeepSeek routes bypass the slider and use DSH's own controls.
 
 The dedicated `workspace` child is a narrow write boundary inside DSH's home. Do **not** use the whole `$DSH_HOME` directory as a Workspace: in `workspace-write`, that would make credentials, configuration, profiles, and session databases writable. DSH filesystem sandbox modes restrict writes, not reads; resource discovery is provided by `dsh_resources` rather than by weakening the write boundary.
 

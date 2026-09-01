@@ -39,7 +39,7 @@
 - 显式的 `reasoningEfforts` 映射优先级最高；未知模型不会被猜测；无效映射只记录诊断日志，不会被静默改写。
 - 插件不替换 DSH 的模型触发按钮、不改请求地址、不发送网络请求；第三方模型的滑块只插入原生菜单内部，原生模型仍完全由 DSH 控制。
 
-第三方模型现在会显示克制的原生滑块：每个档位有清晰节点，菜单中保留“高级设置”入口，可展开 DSH 原生的逐项手动选择。DeepSeek 原生路由跳过该滑块，继续使用 DSH 自己的控制。滑块代码来源说明见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
+第三方模型现在会显示克制的动态滑块：每个档位有清晰节点，菜单中保留“高级设置”入口，可展开 DSH 原生的逐项手动选择。DeepSeek 原生路由跳过该滑块，继续使用 DSH 自己的控制。滑块代码来源说明见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
 
 不需要修改 `customSkillDirs`。DSH 原生就会扫描工作区的 `.dsh/skills` 和 `$DSH_HOME/skills`。
 
