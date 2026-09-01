@@ -1,15 +1,15 @@
 {
-  "name": "dsh-default-workspace",
-  "version": "1.0.0",
-  "description": "Cross-platform native DSH default workspace with complete read-only access to DSH resources, including sensitive state.",
+  "name": "dsh-foundation-enhancements",
+  "version": "1.1.0",
+  "description": "Cross-platform DSH foundation enhancements: safe default workspace plus native-first third-party reasoning capability checks.",
   "author": "CDeZT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CDeZT/dsh-default-workspace.git"
+    "url": "https://github.com/CDeZT/dsh-foundation-enhancements.git"
   },
-  "homepage": "https://github.com/CDeZT/dsh-default-workspace",
+  "homepage": "https://github.com/CDeZT/dsh-foundation-enhancements",
   "bugs": {
-    "url": "https://github.com/CDeZT/dsh-default-workspace/issues"
+    "url": "https://github.com/CDeZT/dsh-foundation-enhancements/issues"
   },
   "type": "module",
   "main": "./lib/index.js",
@@ -38,7 +38,9 @@
     "dsh-plugin",
     "deepseek-harness",
     "workspace",
-    "memory"
+    "memory",
+    "reasoning-effort",
+    "model-capabilities"
   ],
   "engines": {
     "node": ">=22"

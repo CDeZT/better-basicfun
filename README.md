@@ -1,10 +1,10 @@
-# dsh-default-workspace
+# dsh-foundation-enhancements
 
-An installable, cross-platform DSH bundle that creates a persistent default Workspace and gives the model a complete, paged, read-only view of DSH resources.
+An installable, cross-platform DSH bundle that combines a persistent default Workspace with a conservative, native-first reasoning-capability guard.
 
 This is a DSH plugin, not a Codex plugin. It never bridges to `~/.codex`.
 
-Source: <https://github.com/CDeZT/dsh-default-workspace> · Release: <https://github.com/CDeZT/dsh-default-workspace/releases/latest> · Community: <https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
+Source: <https://github.com/CDeZT/dsh-foundation-enhancements> · Release: <https://github.com/CDeZT/dsh-foundation-enhancements/releases/latest> · Community: <https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
 
 ## Important security warning
 
@@ -18,6 +18,12 @@ This plugin deliberately exposes sensitive DSH data to the model. `dsh_resources
 - Loads `MEMORY.md` into requests made from the default Workspace.
 - Adds the read-only `dsh_resources` tool for complete plugin inventory and package files, skill bodies, memory, full session records, storage files, unredacted settings and credentials, and every file below `DSH_HOME`.
 - Keeps `$DSH_HOME/settings.yaml`, `.credentials.yaml`, profiles, sessions, and storages outside the `workspace-write` boundary.
+- Audits third-party model capability mappings in the native `llm-pi-ai` settings namespace.
+- Fills only a small, evidence-backed fallback set (`gemini-3.7-flash-high`, `hy4-preview`, and `hy3`/`hy3-x`) when a mapping is absent; explicit mappings always win.
+- Leaves native DSH providers (including DeepSeek's native route), unknown models, and invalid user-authored mappings untouched except for a diagnostic log entry.
+- Does not replace the DSH Composer model menu, add an animated slider, or remove manual model/reasoning selection. Native DSH controls remain authoritative.
+
+The reasoning guard is deliberately host-only. It does not send requests, alter provider endpoints, infer unsupported effort levels, or guess a wire format. DSH's existing `reasoningEfforts` mapping is the source of truth for model-specific request encoding.
 
 The dedicated `workspace` child is a narrow write boundary inside DSH's home. Do **not** use the whole `$DSH_HOME` directory as a Workspace: in `workspace-write`, that would make credentials, configuration, profiles, and session databases writable. DSH filesystem sandbox modes restrict writes, not reads; resource discovery is provided by `dsh_resources` rather than by weakening the write boundary.
 
@@ -36,7 +42,7 @@ The lexical path check blocks `..` traversal outside `DSH_HOME` while allowing D
 Pack or download the `.tgz`, then run the DSH command bundled with DSH Desktop:
 
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\dsh-default-workspace-1.0.0.tgz"
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\dsh-foundation-enhancements-1.1.0.tgz"
 ```
 
 Restart DSH Desktop after installation. `dsh plugin` adds the package's `dsh.bundle` layer automatically.
@@ -46,7 +52,7 @@ Restart DSH Desktop after installation. `dsh plugin` adds the package's `dsh.bun
 Defaults require no configuration. To override them, add a later layer in `$DSH_HOME/profiles/desktop/cordis.patch.yml`:
 
 ```yaml
-- id: default-workspace
+- id: foundation-enhancements
   config:
     workspacePath: 'D:\DSH\Default'
     title: 'Default workspace'
@@ -55,6 +61,7 @@ Defaults require no configuration. To override them, add a later layer in `$DSH_
     defaultListLimit: 50
     defaultContentLimit: 32768
     maxBinaryReadBytes: 67108864
+    reasoningGuard: true
 ```
 
 Patch config values replace the row's complete config, so restate every non-default key you want to keep.
@@ -83,7 +90,7 @@ The package contains no `preinstall`, `install`, `postinstall`, or `prepare` scr
 ## Uninstall
 
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop remove dsh-default-workspace
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop remove dsh-foundation-enhancements
 ```
 
 Uninstalling unregisters the plugin. It intentionally leaves the Workspace directory and user-authored `MEMORY.md`, skills, and files in place.
