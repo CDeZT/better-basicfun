@@ -1,11 +1,11 @@
 # Changelog
 
-## 1.1.0 - 2026-09-01
+## 1.2.0 - 2026-09-01
 
-- Rename the bundle to `dsh-foundation-enhancements`.
-- Merge the default Workspace/resource tool and reasoning-capability protection into one plugin.
-- Preserve native DSH model controls and manual reasoning selection; remove the need for a custom animated menu takeover.
-- Add conservative, evidence-backed mappings for the tested third-party models and leave unknown/native models untouched.
+- Rename the bundle to `better-basicfun`.
+- Merge the default Workspace/resource tool and reasoning-capability protection with a third-party effort slider.
+- Keep the slider animated but restrained, add clear per-level tick marks, and expose the original manual choices under **Advanced settings**.
+- Keep native DSH providers on their native model/reasoning controls and leave unknown models untouched.
 - Add validation and regression tests for provider classification, wire-format mappings, and non-destructive updates.
 
 ## 1.0.0 - 2026-09-01

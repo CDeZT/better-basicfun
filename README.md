@@ -1,10 +1,10 @@
-# dsh-foundation-enhancements
+# better-basicfun
 
 An installable, cross-platform DSH bundle that combines a persistent default Workspace with a conservative, native-first reasoning-capability guard.
 
 This is a DSH plugin, not a Codex plugin. It never bridges to `~/.codex`.
 
-Source: <https://github.com/CDeZT/dsh-foundation-enhancements> · Release: <https://github.com/CDeZT/dsh-foundation-enhancements/releases/latest> · Community: <https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
+Source: <https://github.com/CDeZT/better-basicfun> · Release: <https://github.com/CDeZT/better-basicfun/releases/latest> · Community: <https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
 
 ## Important security warning
 
@@ -21,9 +21,11 @@ This plugin deliberately exposes sensitive DSH data to the model. `dsh_resources
 - Audits third-party model capability mappings in the native `llm-pi-ai` settings namespace.
 - Fills only a small, evidence-backed fallback set (`gemini-3.7-flash-high`, `hy4-preview`, and `hy3`/`hy3-x`) when a mapping is absent; explicit mappings always win.
 - Leaves native DSH providers (including DeepSeek's native route), unknown models, and invalid user-authored mappings untouched except for a diagnostic log entry.
-- Does not replace the DSH Composer model menu, add an animated slider, or remove manual model/reasoning selection. Native DSH controls remain authoritative.
+- Does not replace the DSH Composer model trigger or remove manual model/reasoning selection. The third-party-only slider is inserted inside the native menu, while native DSH controls remain authoritative.
 
 The reasoning guard is deliberately host-only. It does not send requests, alter provider endpoints, infer unsupported effort levels, or guess a wire format. DSH's existing `reasoningEfforts` mapping is the source of truth for model-specific request encoding.
+
+The browser-side enhancement adds a restrained, animated effort slider for non-native providers. It uses clearly visible per-level tick marks and keeps the original DSH menu rows behind an **Advanced settings** item, so detailed manual selection remains available. Native DeepSeek routes bypass the slider and use DSH's own controls.
 
 The dedicated `workspace` child is a narrow write boundary inside DSH's home. Do **not** use the whole `$DSH_HOME` directory as a Workspace: in `workspace-write`, that would make credentials, configuration, profiles, and session databases writable. DSH filesystem sandbox modes restrict writes, not reads; resource discovery is provided by `dsh_resources` rather than by weakening the write boundary.
 
@@ -42,7 +44,7 @@ The lexical path check blocks `..` traversal outside `DSH_HOME` while allowing D
 Pack or download the `.tgz`, then run the DSH command bundled with DSH Desktop:
 
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\dsh-foundation-enhancements-1.1.0.tgz"
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\better-basicfun-1.2.0.tgz"
 ```
 
 Restart DSH Desktop after installation. `dsh plugin` adds the package's `dsh.bundle` layer automatically.
@@ -52,7 +54,7 @@ Restart DSH Desktop after installation. `dsh plugin` adds the package's `dsh.bun
 Defaults require no configuration. To override them, add a later layer in `$DSH_HOME/profiles/desktop/cordis.patch.yml`:
 
 ```yaml
-- id: foundation-enhancements
+- id: better-basicfun
   config:
     workspacePath: 'D:\DSH\Default'
     title: 'Default workspace'
@@ -78,6 +80,8 @@ The plugin never changes DSH's sandbox mode and never uses symlinks or junctions
 
 The package contains no `preinstall`, `install`, `postinstall`, or `prepare` script. It ships built JavaScript and can be installed from a GitHub release tarball without a build step.
 
+The bundled slider code is credited in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
 ## Official mechanisms used
 
 - DSH bundle packaging and automatic profile-layer registration: <https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md>
@@ -90,7 +94,7 @@ The package contains no `preinstall`, `install`, `postinstall`, or `prepare` scr
 ## Uninstall
 
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop remove dsh-foundation-enhancements
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop remove better-basicfun
 ```
 
 Uninstalling unregisters the plugin. It intentionally leaves the Workspace directory and user-authored `MEMORY.md`, skills, and files in place.

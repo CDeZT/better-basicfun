@@ -1,20 +1,21 @@
 {
-  "name": "dsh-foundation-enhancements",
-  "version": "1.1.0",
-  "description": "Cross-platform DSH foundation enhancements: safe default workspace plus native-first third-party reasoning capability checks.",
+  "name": "better-basicfun",
+  "version": "1.2.0",
+  "description": "DSH better-basicfun: default workspace, native-first reasoning capabilities, and a calm Codex-like effort slider.",
   "author": "CDeZT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CDeZT/dsh-foundation-enhancements.git"
+    "url": "https://github.com/CDeZT/better-basicfun.git"
   },
-  "homepage": "https://github.com/CDeZT/dsh-foundation-enhancements",
+  "homepage": "https://github.com/CDeZT/better-basicfun",
   "bugs": {
-    "url": "https://github.com/CDeZT/dsh-foundation-enhancements/issues"
+    "url": "https://github.com/CDeZT/better-basicfun/issues"
   },
   "type": "module",
   "main": "./lib/index.js",
   "exports": {
     ".": "./lib/index.js",
+    "./client": "./lib/client.js",
     "./core": "./lib/core.js",
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json"
@@ -25,6 +26,7 @@
     "README.md",
     "README.zh-CN.md",
     "SECURITY.md",
+    "THIRD-PARTY-NOTICES.md",
     "CHANGELOG.md",
     "LICENSE"
   ],
@@ -40,7 +42,8 @@
     "workspace",
     "memory",
     "reasoning-effort",
-    "model-capabilities"
+    "model-capabilities",
+    "better-basicfun"
   ],
   "engines": {
     "node": ">=22"
@@ -48,10 +51,22 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-modules"
+      ],
+      "platform": "web"
     }
   },
   "license": "MIT",
   "peerDependencies": {
-    "@deepseek-ai/schemastery": ">=3.18.1-rc.1 <4"
+    "@deepseek-ai/schemastery": ">=3.18.1-rc.1 <4",
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
   }
 }

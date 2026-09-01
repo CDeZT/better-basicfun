@@ -1,8 +1,8 @@
-# dsh-foundation-enhancements
+# better-basicfun
 
 这是一个可直接安装、兼容 Windows/macOS/Linux 的 DSH bundle，不是 Codex 插件，也不会读取或桥接 `~/.codex`。它把“默认工作区”和“原生优先的思考能力校验”合并为一个插件。
 
-源码仓库：<https://github.com/CDeZT/dsh-foundation-enhancements> · 发布包：<https://github.com/CDeZT/dsh-foundation-enhancements/releases/latest> · 官方社区帖子：<https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
+源码仓库：<https://github.com/CDeZT/better-basicfun> · 发布包：<https://github.com/CDeZT/better-basicfun/releases/latest> · 官方社区帖子：<https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
 
 本插件会有意把敏感 DSH 数据暴露给模型：`dsh_resources` 可以返回未脱敏 settings、解析后的凭据值、凭据记录、完整会话、插件文件、skill 正文、memory 和 `DSH_HOME` 下的文件。工具结果可能被发送给模型服务商。安装前请阅读 [SECURITY.md](SECURITY.md)。
 
@@ -21,7 +21,7 @@
 在 PowerShell 中执行：
 
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\dsh-foundation-enhancements-1.1.0.tgz"
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\better-basicfun-1.2.0.tgz"
 ```
 
 安装后重启 DSH Desktop。插件会自动：
@@ -37,7 +37,9 @@
 - 原生 DSH provider（包括 DeepSeek 原生路由）继续使用 DSH 自己的思考强度实现；插件不会覆盖原生菜单，也不会隐藏手动选择。
 - 对第三方 provider，插件只在 `llm-pi-ai` 中缺少映射时补充少量已实测、证据充分的映射：`gemini-3.7-flash-high`、`hy4-preview`、`hy3`/`hy3-x`。
 - 显式的 `reasoningEfforts` 映射优先级最高；未知模型不会被猜测；无效映射只记录诊断日志，不会被静默改写。
-- 插件不注入动画滑块、不改请求地址、不发送网络请求。DSH 原生模型菜单仍是唯一的手动选择入口。
+- 插件不替换 DSH 的模型触发按钮、不改请求地址、不发送网络请求；第三方模型的滑块只插入原生菜单内部，原生模型仍完全由 DSH 控制。
+
+第三方模型现在会显示克制的动态滑块：每个档位有清晰节点，菜单中保留“高级设置”入口，可展开 DSH 原生的逐项手动选择。DeepSeek 原生路由跳过该滑块，继续使用 DSH 自己的控制。滑块代码来源说明见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
 
 不需要修改 `customSkillDirs`。DSH 原生就会扫描工作区的 `.dsh/skills` 和 `$DSH_HOME/skills`。
 
@@ -56,7 +58,7 @@
 默认无需配置。如果要换路径，在 `$DSH_HOME/profiles/desktop/cordis.patch.yml` 中加入更晚的覆盖层：
 
 ```yaml
-- id: foundation-enhancements
+- id: better-basicfun
   config:
     workspacePath: 'D:\DSH\Default'
     title: 'Default workspace'
@@ -70,7 +72,7 @@
 ## 卸载
 
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop remove dsh-foundation-enhancements
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop remove better-basicfun
 ```
 
 卸载不会删除工作区和用户写入的记忆、skills 或普通文件。
