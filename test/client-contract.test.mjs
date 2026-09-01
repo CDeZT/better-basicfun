@@ -7,6 +7,7 @@ const client = await readFile(new URL('../lib/client.js', import.meta.url), 'utf
 
 test('composer client keeps the stable animation path and exposes safe menu modes', () => {
   assert.match(client, /--bre-level-count/)
+  assert.match(client, /--bre-level-step/)
   assert.match(client, /bre-effort-slider::before/)
   assert.match(client, /data-bre-mode="slider"/)
   assert.match(client, /advancedSettingsOpen/)
