@@ -21,7 +21,7 @@
 在 PowerShell 中执行：
 
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\better-basicfun-1.2.0.tgz"
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\better-basicfun-1.2.1.tgz"
 ```
 
 安装后重启 DSH Desktop。插件会自动：

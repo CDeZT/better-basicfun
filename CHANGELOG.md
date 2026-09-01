@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 - 2026-09-01
+
+- Rebuild the composer control from the smooth upstream implementation to avoid renderer churn.
+- Keep the animated slider, add clear per-level ticks, and expose official manual choices behind **Advanced settings**.
+- Leave native DeepSeek and unsupported/unknown models on DSH's own controls.
+
 ## 1.2.0 - 2026-09-01
 
 - Rename the bundle to `better-basicfun`.
