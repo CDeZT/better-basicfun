@@ -2,7 +2,7 @@
 
 这是一个可直接安装、兼容 Windows/macOS/Linux 的 DSH bundle，不是 Codex 插件，也不会读取或桥接 `~/.codex`。
 
-源码仓库：<https://github.com/CDeZT/dsh-default-workspace> · 发布包：<https://github.com/CDeZT/dsh-default-workspace/releases/latest>
+源码仓库：<https://github.com/CDeZT/dsh-default-workspace> · 发布包：<https://github.com/CDeZT/dsh-default-workspace/releases/latest> · 官方社区帖子：<https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
 
 本插件会有意把敏感 DSH 数据暴露给模型：`dsh_resources` 可以返回未脱敏 settings、解析后的凭据值、凭据记录、完整会话、插件文件、skill 正文、memory 和 `DSH_HOME` 下的文件。工具结果可能被发送给模型服务商。安装前请阅读 [SECURITY.md](SECURITY.md)。
 

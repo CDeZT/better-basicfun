@@ -4,7 +4,7 @@ An installable, cross-platform DSH bundle that creates a persistent default Work
 
 This is a DSH plugin, not a Codex plugin. It never bridges to `~/.codex`.
 
-Source: <https://github.com/CDeZT/dsh-default-workspace> · Release: <https://github.com/CDeZT/dsh-default-workspace/releases/latest>
+Source: <https://github.com/CDeZT/dsh-default-workspace> · Release: <https://github.com/CDeZT/dsh-default-workspace/releases/latest> · Community: <https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
 
 ## Important security warning
 
