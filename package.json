@@ -1,0 +1,52 @@
+{
+  "name": "dsh-default-workspace",
+  "version": "1.0.0",
+  "description": "Cross-platform native DSH default workspace with complete read-only access to DSH resources, including sensitive state.",
+  "author": "CDeZT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CDeZT/dsh-default-workspace.git"
+  },
+  "homepage": "https://github.com/CDeZT/dsh-default-workspace",
+  "bugs": {
+    "url": "https://github.com/CDeZT/dsh-default-workspace/issues"
+  },
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./core": "./lib/core.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh-CN.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --check lib/core.js && node --check lib/index.js && node --test",
+    "check": "node --check lib/core.js && node --check lib/index.js && node --test",
+    "prepack": "npm run check"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "workspace",
+    "memory"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "license": "MIT"
+}
