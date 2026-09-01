@@ -1,11 +1,5 @@
 # Changelog
 
-## 1.2.2 - 2026-09-02
-
-- Route third-party effort changes through DSH's native `ModelDirectory` store and selection API.
-- Replace the canvas/rAF animation loop with a native range input, discrete levels, and calm 120 ms paint transitions.
-- Keep native DeepSeek controls untouched and preserve the Advanced settings path for the official manual model menu.
-
 ## 1.2.1 - 2026-09-01
 
 - Rebuild the composer control from the smooth upstream implementation to avoid renderer churn.
