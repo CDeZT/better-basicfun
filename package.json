@@ -56,5 +56,8 @@
   "license": "MIT",
   "peerDependencies": {
     "@deepseek-ai/schemastery": ">=3.18.1-rc.1 <4"
+  },
+  "devDependencies": {
+    "@deepseek-ai/schemastery": "3.18.2"
   }
 }
