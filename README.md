@@ -1,57 +1,77 @@
 # better-basicfun
 
-An installable, cross-platform DSH bundle that combines a persistent default Workspace with a conservative, native-first reasoning-capability guard.
+An installable, cross-platform DSH bundle that fills a small set of missing host-side fundamentals: a persistent default Workspace, complete resource inspection, and synchronization of CLIProxyAPI's rich model catalog into native DSH Provider settings.
 
-This is a DSH plugin, not a Codex plugin. It never bridges to `~/.codex`.
+It is not a Codex plugin, does not read `~/.codex`, does not inject or modify DSH frontend code, and does not proxy inference. DSH's native model and reasoning selector remains authoritative.
 
 Source: <https://github.com/CDeZT/better-basicfun> · Release: <https://github.com/CDeZT/better-basicfun/releases/latest> · Community: <https://github.com/deepseek-ai/deepseek-harness/discussions/5344>
 
-## Important security warning
+## Features
 
-This plugin deliberately exposes sensitive DSH data to the model. `dsh_resources` can return unredacted settings, resolved credential values, credential records, full session records, plugin files, skill bodies, memory, and files below `DSH_HOME`. Tool results may be sent to the configured model provider. Install it only on a trusted personal deployment; read [SECURITY.md](SECURITY.md) first.
+- Creates and registers `$DSH_HOME/workspace` as the default Workspace.
+- Creates `AGENTS.md`, `MEMORY.md`, and `.dsh/skills/` without overwriting user files.
+- Loads persistent memory for sessions in the default Workspace.
+- Adds the read-only `dsh_resources` tool for plugins, skills, memory, sessions, storage, settings, credentials, and files below `DSH_HOME`.
+- Synchronizes CLIProxyAPI's rich model catalog on the host so DSH's native selector receives dynamic capability metadata.
+- Contains no React dependency, DOM injection, frontend slider, or static model-name capability guesses.
 
-## What it does
+This plugin deliberately exposes sensitive DSH data to the model. `dsh_resources` can return unredacted settings, resolved credentials, complete sessions, and files below `DSH_HOME`; tool results may be sent to the configured model provider. Read [SECURITY.md](SECURITY.md) before installing.
 
-- Creates and registers `$DSH_HOME/workspace` as **Default workspace** (normally `~/.dsh/workspace`).
-- Moves that Workspace to the front of DSH's durable Workspace order, so the Web/Desktop new-session flow can use it as the most recent fallback.
-- Creates `AGENTS.md`, `MEMORY.md`, and `.dsh/skills/` without overwriting existing files.
-- Loads `MEMORY.md` into requests made from the default Workspace.
-- Adds the read-only `dsh_resources` tool for complete plugin inventory and package files, skill bodies, memory, full session records, storage files, unredacted settings and credentials, and every file below `DSH_HOME`.
-- Keeps `$DSH_HOME/settings.yaml`, `.credentials.yaml`, profiles, sessions, and storages outside the `workspace-write` boundary.
-- Audits third-party model capability mappings in the native `llm-pi-ai` settings namespace.
-- Fills only a small, evidence-backed fallback set (`gemini-3.7-flash-high`, `hy4-preview`, and `hy3`/`hy3-x`) when a mapping is absent; explicit mappings always win.
-- Leaves native DSH providers (including DeepSeek's native route), unknown models, and invalid user-authored mappings untouched except for a diagnostic log entry.
-- Does not replace the DSH Composer model trigger or remove manual model/reasoning selection. The third-party-only slider is inserted inside the native menu, while native DSH controls remain authoritative.
+## CLIProxyAPI native catalog bridge
 
-The reasoning guard is deliberately host-only. It does not send requests, alter provider endpoints, infer unsupported effort levels, or guess a wire format. DSH's existing `reasoningEfforts` mapping is the source of truth for model-specific request encoding.
+Configure a DSH custom Provider with the real CLIProxyAPI inference URL. The plugin only synchronizes the catalog:
 
-The browser-side enhancement adds a restrained, animated effort slider for non-native providers. It uses clearly visible per-level tick marks and keeps the original DSH menu rows behind an **Advanced settings** item, so detailed manual selection remains available. Native DeepSeek routes bypass the slider and use DSH's own controls.
+```text
+GET {baseURL}/models?client_version=pi
+  → CLIProxyAPI rich models[] catalog
+  → DSH models[] (id/name/contextWindow/maxTokens/input/reasoningEfforts)
+  → llm-pi-ai settings
+  → native DSH model/reasoning selector
+```
 
-The dedicated `workspace` child is a narrow write boundary inside DSH's home. Do **not** use the whole `$DSH_HOME` directory as a Workspace: in `workspace-write`, that would make credentials, configuration, profiles, and session databases writable. DSH filesystem sandbox modes restrict writes, not reads; resource discovery is provided by `dsh_resources` rather than by weakening the write boundary.
+Inference remains direct: `DSH → configured CLIProxyAPI Base URL → model service`.
 
-DSH already discovers both `<workspace>/.dsh/skills` and `$DSH_HOME/skills`; this bundle does not require `customSkillDirs`.
+Example:
 
-## Native resource access and pagination
+```yaml
+llm-pi-ai:
+  providers:
+    cliproxyapi:
+      displayName: CLIProxyAPI
+      apiKeyEnv: CLIPROXYAPI_KEY
+      api: openai-responses
+      baseURL: http://127.0.0.1:8317/v1
+      models:
+        - id: placeholder
+```
 
-The tool is backed by `ctx.loader`, `ctx.skills`, `ctx.sessionQuery`, `ctx.fs`, `ctx.settings`, `ctx.credentials`, and `ctx.storage`. Its `kind` values are `overview`, `plugins`, `skills`, `memory`, `sessions`, `storage`, `settings`, `credential`, `list`, and `file`. `kind=storage` also reports the mounted native storage backend and form names before listing the corresponding DSH storage directory.
+DSH currently cannot save a custom Provider with no models. During initial setup, use DSH's **Fetch available models** action and select at least one result before saving; no hand-written placeholder is needed. The bridge enriches the selected list after the Provider is saved.
 
-Use `offset` and `limit` to continue a result. A `nextOffset` value means another page is available; the plugin does not silently replace a complete list with “last N” entries. For `skills`, pass `name` to read a complete native definition/body. For `sessions`, pass `id` to read a complete session document. `list` and `file` accept any DSH_HOME-relative or DSH_HOME-contained path, including profiles and installed package files.
+The bridge refreshes at startup, after `llm-pi-ai` changes, after a relevant API key changes, and every 15 minutes by default. Plain OpenAI `{"data": [...]}` responses are ignored. Empty or failed responses never erase a working model list. API keys are resolved on the DSH host and sent only to the configured Provider catalog endpoint, never to the browser.
 
-The lexical path check blocks `..` traversal outside `DSH_HOME` while allowing DSH's own package links. Text and structured resources are page-addressable. Binary reads use native `ctx.fs.readBytes` and are bounded by `maxBinaryReadBytes` to avoid accidental unbounded allocations.
+Enter only the normal inference Base URL, such as `http://127.0.0.1:8317/v1`. Do not append `/models` or `?client_version=pi`; the bridge constructs the rich catalog URL itself.
+
+Reasoning levels are mapped from the remote catalog only: `none` becomes DSH `off`; canonical levels remain unchanged; and `ultra` occupies DSH's current `max` position only when no real `max` is advertised. The bridge never guesses capabilities from model names. `default_reasoning_level` is not written because DSH currently has no safe equivalent per-model default field.
 
 ## Install in DSH Desktop
 
-Pack or download the `.tgz`, then run the DSH command bundled with DSH Desktop:
-
 ```powershell
-& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\better-basicfun-1.2.0.tgz"
+& "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop add "C:\path\to\better-basicfun-1.3.0.tgz"
 ```
 
-Restart DSH Desktop after installation. `dsh plugin` adds the package's `dsh.bundle` layer automatically.
+Restart DSH Desktop after installation.
+
+## Workspace and permission boundary
+
+The Workspace is `$DSH_HOME/workspace`; its skills are in `.dsh/skills`, while user-level skills remain in `$DSH_HOME/skills`. Profiles, sessions, storage, settings, and credentials stay outside the Workspace write boundary.
+
+Do not use all of `$DSH_HOME` as a Workspace: `workspace-write` would then allow changes to private DSH state. This plugin provides read-only discovery through native host services without widening that boundary. No `customSkillDirs` change is needed.
+
+`dsh_resources` supports `overview`, `plugins`, `skills`, `memory`, `sessions`, `storage`, `settings`, `credential`, `cliproxyapi`, `list`, and `file`. The `cliproxyapi` view reports synchronization status without returning credentials.
 
 ## Configuration
 
-Defaults require no configuration. To override them, add a later layer in `$DSH_HOME/profiles/desktop/cordis.patch.yml`:
+Defaults require no configuration. Example override:
 
 ```yaml
 - id: better-basicfun
@@ -63,33 +83,14 @@ Defaults require no configuration. To override them, add a later layer in `$DSH_
     defaultListLimit: 50
     defaultContentLimit: 32768
     maxBinaryReadBytes: 67108864
-    reasoningGuard: true
+    cliProxySync: true
+    cliProxyProbeAllCustomProviders: true
+    cliProxyRoutes: []
+    cliProxyRefreshMinutes: 15
+    cliProxyRequestTimeoutMs: 10000
 ```
 
-Patch config values replace the row's complete config, so restate every non-default key you want to keep.
-
-For temporary testing, `DSH_DEFAULT_WORKSPACE` can override the default path without editing the profile. An explicit `workspacePath` in plugin configuration takes precedence.
-
-## Permission behavior
-
-- `read-only`: every `dsh_resources` operation works, including sensitive reads; no mutation is performed.
-- `workspace-write`: the same complete read access remains available. Normal files, `MEMORY.md`, and Workspace-local skills can be changed; host settings and state stay outside the allowed write root.
-- `danger-full-access`: DSH applies its standard unrestricted policy.
-
-The plugin never changes DSH's sandbox mode and never uses symlinks or junctions to bypass canonical path containment.
-
-The package contains no `preinstall`, `install`, `postinstall`, or `prepare` script. It ships built JavaScript and can be installed from a GitHub release tarball without a build step.
-
-The bundled slider code is credited in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
-
-## Official mechanisms used
-
-- DSH bundle packaging and automatic profile-layer registration: <https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md>
-- Workspace registry and host-owned Workspace model: <https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workspace.md>
-- Native skill discovery roots, including `<workspace>/.dsh/skills` and `$DSH_HOME/skills`: <https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md>
-- Native `AGENTS.md` instructions: <https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md>
-- Session query service: <https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session-query/tool-session-query/README.md>
-- Filesystem and sandbox behavior: <https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/filesystem.md>
+An empty `cliProxyRoutes` probes custom OpenAI-compatible Base URLs but only writes when a rich `models[]` response is recognized. Use `cliProxyRoutes: [cliproxyapi]` to restrict probing to named routes.
 
 ## Uninstall
 
@@ -97,4 +98,4 @@ The bundled slider code is credited in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTI
 & "$env:APPDATA\DSH Desktop\host-commands\desktop\bin\dsh.cmd" plugin --profile desktop remove better-basicfun
 ```
 
-Uninstalling unregisters the plugin. It intentionally leaves the Workspace directory and user-authored `MEMORY.md`, skills, and files in place.
+Uninstalling leaves user-authored Workspace files, memory, and skills intact.

@@ -34,7 +34,11 @@ test('published Config supplies validated defaults for deployment-varying limits
     defaultListLimit: 50,
     defaultContentLimit: 32 * 1024,
     maxBinaryReadBytes: 64 * 1024 * 1024,
-    reasoningGuard: true,
+    cliProxySync: true,
+    cliProxyProbeAllCustomProviders: true,
+    cliProxyRoutes: [],
+    cliProxyRefreshMinutes: 15,
+    cliProxyRequestTimeoutMs: 10_000,
   })
   assert.throws(() => Config({ defaultListLimit: 0 }), /expected number >= 1/i)
 })

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0 - 2026-09-02
+
+- Remove all frontend injection, React dependencies, custom sliders, and static model-name capability guesses; DSH's native controls are now the only UI.
+- Add a host-only CLIProxyAPI catalog bridge; inference traffic still goes directly from DSH to the configured provider.
+- Fetch `/v1/models?client_version=pi` and map rich model names, capacities, modalities, and reasoning levels into native `llm-pi-ai` model profiles.
+- Refresh on startup, settings changes, relevant credential changes, and a configurable interval without erasing working models on empty/error responses.
+- Keep credentials out of the frontend path and expose bridge diagnostics through `dsh_resources kind=cliproxyapi`.
+
 ## 1.2.1 - 2026-09-01
 
 - Rebuild the composer control from the smooth upstream implementation to avoid renderer churn.
